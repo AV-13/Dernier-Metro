@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  metro-normal:
+    build: .
+    ports:
+      - "3001:3000"
+    environment:
+      - MOCK_TIME=14:30
+
+  metro-critical:
+    build: .
+    ports:
+      - "3002:3000"
+    environment:
+      - MOCK_TIME=00:58
+
+  metro-closed:
+    build: .
+    ports:
+      - "3003:3000"
+    environment:
+      - MOCK_TIME=02:30
