@@ -20,3 +20,32 @@ services:
       - "3003:3000"
     environment:
       - MOCK_TIME=02:30
+
+  metro-config:
+    build: .
+    ports:
+      - "3004:3000"
+    environment:
+      - MOCK_TIME=00:42
+      - HEADWAY_MIN=5
+      - LAST_WINDOW_START=00:40
+      - SERVICE_END=01:20
+
+  metro-extended:
+    build: .
+    ports:
+      - "3005:3000"
+    environment:
+      - MOCK_TIME=01:18
+      - SERVICE_END=01:30
+      - HEADWAY_MIN=7
+
+  metro-test:
+    build: .
+    ports:
+      - "3006:3000"
+    environment:
+      - MOCK_TIME=00:47
+      - HEADWAY_MIN=4
+      - LAST_WINDOW_START=00:45
+      - SERVICE_END=01:15
