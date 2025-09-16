@@ -1,4 +1,5 @@
 "use strict";
+const swaggerUi = require('swagger-ui-express');
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,100 @@ const KNOWN_STATIONS = [
     "Chatelet", "Bastille", "Nation", "République", "Gare du Nord",
     "Montparnasse", "Charles de Gaulle", "Champs Élysées", "Opéra", "Louvre"
 ];
+
+const swaggerDocument = {
+    openapi: '3.0.0',
+    info: {
+        title: 'Dernier Metro API',
+        version: '1.0.0',
+        description: 'API REST simulant les horaires du dernier métro parisien',
+        contact: {
+            name: 'Augustin V',
+            url: 'https://github.com/AV-13/Dernier-Metro'
+        }
+    },
+    servers: [
+        {
+            url: 'http://localhost:3000',
+            description: 'Serveur de développement'
+        }
+    ],
+    paths: {
+        '/health': {
+            get: {
+                summary: 'Vérification de l\'état du service',
+                tags: ['Health'],
+                responses: {
+                    '200': {
+                        description: 'Service opérationnel',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        status: {
+                                            type: 'string',
+                                            example: 'ok'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '/next-metro': {
+            get: {
+                summary: 'Informations sur le prochain métro',
+                tags: ['Metro'],
+                parameters: [
+                    {
+                        name: 'station',
+                        in: 'query',
+                        required: true,
+                        schema: {
+                            type: 'string',
+                        },
+                        description: 'Nom de la station de métro'
+                    },
+                    {
+                        name: 'n',
+                        in: 'query',
+                        required: false,
+                        schema: {
+                            type: 'integer',
+                            minimum: 1,
+                            maximum: 5,
+                            default: 1
+                        },
+                        description: 'Nombre d\'horaires à afficher'
+                    }
+                ],
+                responses: {
+                    '200': {
+                        description: 'Informations sur le prochain métro',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object'
+                                }
+                            }
+                        }
+                    },
+                    '400': {
+                        description: 'Paramètre manquant ou invalide'
+                    },
+                    '404': {
+                        description: 'Station inconnue'
+                    }
+                }
+            }
+        }
+    }
+};
+
+
 
 function parseTime(timeStr) {
     const [hours, minutes] = timeStr.split(':');
@@ -96,6 +191,8 @@ function suggestStations(query) {
         station.toLowerCase().startsWith(queryLower)
     );
 }
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res, next) => {
     const t0 = Date.now();
