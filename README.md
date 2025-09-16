@@ -23,7 +23,7 @@ npm install
 node server.js
 
 # Avec heure simulée pour tests
-MOCK_TIME=00:50 node server.js
+$env:MOCK_TIME="01:58"; node server.js # WINDOWS
 ```
 
 ### Avec Docker
